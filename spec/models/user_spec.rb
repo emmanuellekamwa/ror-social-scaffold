@@ -25,19 +25,19 @@ RSpec.describe User, type: :model do
     end
 
     it 'should reject the incoming friend request' do
-      @user1.friend_requests.new(friend_id:@user2.id, status: false).save
+      @user1.friend_requests.new(friend_id: @user2.id, status: false).save
       @user2.confirm_friend(user1)
       expect(@user1.friend_requests.size).to eq(0)
     end
 
     it 'should confirm the incoming friend request' do
-      @user1.friend_requests.new(friend_id:@user2.id, status: false).save
+      @user1.friend_requests.new(friend_id: @user2.id, status: false).save
       @user2.confirm_friend(@user1)
       expect(@user1.friend_requests.first.status).to.eq(true)
     end
 
     it 'should return one pending friend request' do
-      @user1.friend_requests.new(friend_id:@user2.id, status: false).save
+      @user1.friend_requests.new(friend_id: @user2.id, status: false).save
       expect(@user1.pending_friends.length).to eq(1)
     end
   end
