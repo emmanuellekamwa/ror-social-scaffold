@@ -14,7 +14,6 @@ class User < ApplicationRecord
   has_many :confirmed_friendships, -> { where confirmed: true }, class_name: 'Friendship'
   has_many :friends, through: :confirmed_friendships
 
-
   # Users who have yet to confirm friend requests
   def pending_friends
     friendships.map { |friendships| friendships.friends sunless friendships.confirmed }.compact
