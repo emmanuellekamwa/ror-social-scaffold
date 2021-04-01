@@ -6,15 +6,15 @@
 
 - Ruby v2.7.0
 - Ruby on Rails v5.2.4
-
-## Live Demo
-
-TBA
-
+- Vs Code
 
 ## Getting Started
 
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running follow these simple example steps:
+
+- First copy the github link so as to clone it
+- Open your terminal and type git clone
+- Browse into your project directory by typing cd followed by the correct name of your project
 
 ### Prerequisites
 
@@ -62,13 +62,6 @@ Open `http://localhost:3000/` in your browser.
 ```
     rpsec --format documentation
 ```
-
-> Tests will be added by Microverse students. There are no tests for initial features in order to make sure that students write all tests from scratch.
-
-### Deployment
-
-TBA
-
 ## Authors
 
 TBA
