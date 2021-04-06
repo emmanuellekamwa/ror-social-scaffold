@@ -10,26 +10,10 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :likes, dependent: :destroy
   has_many :friendships
-  has_many :inverse_friendships, class_name: 'Friendship', foreign_key: 'friend_id'
-  has_many :confirmed_friendships, -> { where confirmed: true }, class_name: 'Friendship'
-  has_many :friends, through: :confirmed_friendships
+  has_many :friends, -> { where('status = ?', 'accepted') }, through: :friendships, source: :friend
 
-  # Users who have yet to confirm friend requests
-  def pending_friends
-    friendships.map { |friendships| friendships.friends sunless friendships.confirmed }.compact
-  end
-
-  # Users who have requested to be friends
-  def friend_requests
-    inverse_friendships.map { |friendship| friendship.user unless friendship.confirmed }.compact
-  end
-
-  def confirm_friend(user)
-    friend = Friendship.find_by(user_id: user.id, friend_id: id)
-    friend.confirmed = true
-    friend.save
-    Friendship.create!(user_id: id, friend_id: user.id, confirmed: true)
-  end
+  has_many :requested_friends, -> { where('status = ?', 'requested') }, through: :friendships, source: :friend
+  has_many :pending_friends, -> { where('status = ?', 'pending') }, through: :friendships, source: :friend
 
   def reject_friend(user)
     friendship = inverse_friendships.find { |f| f.user == user }
