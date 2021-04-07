@@ -1,9 +1,17 @@
 <section class="user-section">
   <h2><%= "Name: #{@user.name}" %></h2>
+  <span>Friendship status: <%= invite_status(@user) %></span>
+  <p> Mutual Friends:
+    <% current_user.mutual_friends(@user).each do |friend|%>
+      <small><%= link_to friend.name, user_path(friend) %>,</small>
+    <% end %>
+  </p>
   <article class="timeline">
     <h3>Recent posts:</h3>
+    <% if current_user.friends.include?(@user) %>
     <ul class="posts">
       <%= render @posts %>
     </ul>
+    <% end %>
   </article>
 </section>
