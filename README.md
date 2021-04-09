@@ -64,7 +64,11 @@ Open `http://localhost:3000/` in your browser.
 ```
 ## Authors
 
-TBA
+**Emmanuelle Kamwa**
+
+- Github: [@emmanuellekamwa](https://github.com/emmanuellekamwa)
+- Linkedin: [emmanuelle-kamwa-86145a1a4](https://www.linkedin.com/in/emmanuelle-kamwa-86145a1a4/)
+- Twitter: [@AlixKamwa](https://twitter.com/AlixKamwa)
 
 ## 🤝 Contributing
 
