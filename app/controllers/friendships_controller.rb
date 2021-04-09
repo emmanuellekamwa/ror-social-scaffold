@@ -1,21 +1,56 @@
 class FriendshipsController < ApplicationController
-  def create
-    @friendship = current_user.friendships.new(friend_id: params[:user_id], status: false)
+  before_action :setup_friends
 
-    if @friendship.save
-      redirect_to users_path, notice: 'New invite sent'
+  def create
+    Friendship.request(@current_user, @friend)
+    flash[:notice] = 'Invite sent.'
+    redirect_to users_path
+  end
+
+  def update
+    if @current_user.requested_friends.include?(@friend)
+      Friendship.accept(@current_user, @friend)
+      flash[:notice] = "Friendship with #{@friend.name} accepted!"
     else
-      redirect_to users_path, alert: 'Something went wrong'
+      flash[:alert] = "You have no friend request from #{@friend.name}"
     end
+    redirect_to root_path
   end
 
   def destroy
-    @user = User.find(params[:user_id])
-
-    if current_user.friend?(@user)
-      redirect_to users_path, notice: 'Invite rejected'
+    if @current_user.friends.include?(@friend)
+      Friendship.breakup(@current_user, @friend)
+      flash[:notice] = 'Friend deleted!'
+      redirect_to root_path
     else
-      redirect_to users_path, alert: 'Something went wrong'
+      flash[:alert] = 'Your operation was not successful!'
     end
+  end
+
+  def decline
+    if @current_user.requested_friends.include?(@friend)
+      Friendship.breakup(@current_user, @friend)
+      flash[:notice] = 'Friendship declined'
+    else
+      flash[:notice] = "No friendship request from #{@friend.name}."
+    end
+    redirect_to @current_user
+  end
+
+  def cancel
+    if @current_user.pending_friends.include?(@friend)
+      Friendship.breakup(@current_user, @friend)
+      flash[:notice] = 'Request canceled.'
+    else
+      flash[:notice] = "No request for friendship with #{@friend.screen_name}"
+    end
+    redirect_to @current_user
+  end
+
+  private
+
+  def setup_friends
+    @current_user = User.find_by(id: current_user.id)
+    @friend = User.find(params[:friend_id])
   end
 end

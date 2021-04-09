@@ -1,20 +1,30 @@
 module UsersHelper
-  def invite_status(invitee)
-    res = ''
-    return if current_user.id == invitee.id
+  def timeline_posts(post)
+    return unless current_user.friends.include?(post.user)
+  end
 
-    if current_user.pending_friends.include?(invitee)
-      res << link_to('Pending Request', '#')
-    elsif current_user.requested_friends.include?(invitee)
-      res << link_to('Accept', invite_path(user_id: invitee.id), method: :put)
-      res << ' | '
-      res << link_to('Reject', reject_path(user_id: invitee.id), method: :delete)
-    elsif current_user.friend?(invitee) || invitee.friend?(current_user)
-      res << link_to('Friends', '#')
-    else
-      res << link_to('Add Friend', invite_path(user_id: invitee.id), method: :post)
-    end
+  def friends
+    render 'friends'
+  end
 
-    res.html_safe
+  def delete_friend(friend)
+    return unless current_user?
+
+    link_to 'Delete', friendship_path(user_id: current_user, friend_id: friend), method: :delete, class: 'btn btn-war
+      ning'
+  end
+
+  def requested_friends
+    render 'requested_friends' if current_user?
+  end
+
+  def pending_friends
+    render 'pending_friends' if current_user?
+  end
+
+  private
+
+  def current_user?
+    @user == current_user
   end
 end

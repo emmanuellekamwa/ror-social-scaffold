@@ -6,9 +6,6 @@ Rails.application.routes.draw do
 
   resources :users, only: [:index, :show]
   resources :friendships
-  resources :invite
-  delete '/cancel', to: 'friendships#cancel'
-  delete '/decline', to: 'friendships#decline'
 
   resources :posts, only: [:index, :create] do
     resources :comments, only: [:create]

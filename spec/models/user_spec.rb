@@ -17,4 +17,24 @@ RSpec.describe User, type: :model do
       expect(user) == true
     end
   end
+
+  context 'ActiveRecord associations' do
+    it 'belongs to user' do
+      user = Friendship.reflect_on_association(:user)
+      expect(user.macro).to eq(:belongs_to)
+    end
+
+    it 'belongs to friend' do
+      user = Friendship.reflect_on_association(:friend)
+      expect(user.macro).to eq(:belongs_to)
+    end
+  end
+
+  context 'Attributes Validation' do
+    friendship = Friendship.new(user_id: @user_one, friend_id: nil, status: 'pending')
+
+    it 'should invalidate the user_id of value nil' do
+      expect(friendship).to_not be_valid
+    end
+  end
 end
