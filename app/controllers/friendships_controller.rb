@@ -1,56 +1,25 @@
 class FriendshipsController < ApplicationController
-  before_action :setup_friends
-
   def create
-    Friendship.request(@current_user, @friend)
-    flash[:notice] = 'Invite sent.'
-    redirect_to users_path
-  end
+    @friendship = current_user.friendships.new(friend_id: params[:user_id], confirmed: false)
 
-  def update
-    if @current_user.requested_friends.include?(@friend)
-      Friendship.accept(@current_user, @friend)
-      flash[:notice] = "Friendship with #{@friend.name} accepted!"
+    if @friendship.save
+      redirect_to users_path, notice: 'New invite sent.'
     else
-      flash[:alert] = "You have no friend request from #{@friend.name}"
+      redirect_to users_path, alert: 'Oops something went wrong!'
     end
-    redirect_to root_path
   end
 
   def destroy
-    if @current_user.friends.include?(@friend)
-      Friendship.breakup(@current_user, @friend)
-      flash[:notice] = 'Friend deleted!'
-      redirect_to root_path
+    @friendship = Friendship.find_by(user_id: current_user.id, friend_id: params[:user_id])
+    @invert_friendship = Friendship.find_by(user_id: params[:user_id], friend_id: current_user.id)
+
+    if @invert_friendship.nil?
+      @friendship.destroy
+      redirect_to request.referrer, notice: 'Friendship invite cancelled!'
     else
-      flash[:alert] = 'Your operation was not successful!'
+      @invert_friendship.destroy
+      @friendship.destroy
+      redirect_to request.referrer, notice: 'Unfriended the friend'
     end
-  end
-
-  def decline
-    if @current_user.requested_friends.include?(@friend)
-      Friendship.breakup(@current_user, @friend)
-      flash[:notice] = 'Friendship declined'
-    else
-      flash[:notice] = "No friendship request from #{@friend.name}."
-    end
-    redirect_to @current_user
-  end
-
-  def cancel
-    if @current_user.pending_friends.include?(@friend)
-      Friendship.breakup(@current_user, @friend)
-      flash[:notice] = 'Request canceled.'
-    else
-      flash[:notice] = "No request for friendship with #{@friend.screen_name}"
-    end
-    redirect_to @current_user
-  end
-
-  private
-
-  def setup_friends
-    @current_user = User.find_by(id: current_user.id)
-    @friend = User.find(params[:friend_id])
   end
 end

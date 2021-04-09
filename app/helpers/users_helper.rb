@@ -1,30 +1,22 @@
 module UsersHelper
-  def timeline_posts(post)
-    return unless current_user.friends.include?(post.user)
-  end
+  def accept_or_pending_btn(obj)
+    return unless current_user.id != obj.id
 
-  def friends
-    render 'friends'
-  end
+    out = ''
+    if current_user.friend?(obj)
+      out << link_to('Unfriend', unfriend_path(user_id: obj.id), class: 'btn btn-secondary', method: :delete)
+    elsif current_user.pending_friends.include?(obj)
+      out << link_to('pending friendship', '#', class: 'profile-link f-link')
+      out << ' | '
+      out << link_to('cancel', unfriend_path(user_id: obj.id), class: 'btn btn-secondary', method: :delete)
+    elsif current_user.friend_requests.include?(obj)
+      out << link_to('Accept', invite_path(user_id: obj.id), class: 'btn btn-primary', method: :put)
+      out << ' | '
+      out << link_to('Reject', reject_path(user_id: obj.id), class: 'btn btn-secondary', method: :delete)
+    else
+      out << link_to('Add Friend', invite_path(user_id: obj.id), class: 'btn btn-primary', method: :post)
+    end
 
-  def delete_friend(friend)
-    return unless current_user?
-
-    link_to 'Delete', friendship_path(user_id: current_user, friend_id: friend), method: :delete, class: 'btn btn-war
-      ning'
-  end
-
-  def requested_friends
-    render 'requested_friends' if current_user?
-  end
-
-  def pending_friends
-    render 'pending_friends' if current_user?
-  end
-
-  private
-
-  def current_user?
-    @user == current_user
+    out.html_safe
   end
 end
