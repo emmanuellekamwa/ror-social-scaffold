@@ -1,6 +1,16 @@
-<li>
-  Name: <%= user.name %>
-  <span class="profile-link">
-    <%= link_to 'See Profile',  user_path(user), class: 'profile-link' %>
-  </span>
-</li>
+<% if current_user != user %>
+  <li class="mt-4">
+
+    Name: <%= user.name %>
+    <span class="profile-link">
+      <%= link_to "See Profile", user_path(user), class: "profile-link" %>
+      <%= link_to "Mutual Friends", user_path(user), class: "profile-link" %>
+
+    </span>
+
+
+
+    <%= accept_or_pending_btn(user) %>
+
+  </li> 
+<% end %>
