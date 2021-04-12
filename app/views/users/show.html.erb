@@ -1,9 +1,25 @@
 <section class="user-section">
-  <h2><%= "Name: #{@user.name}" %></h2>
-  <article class="timeline">
-    <h3>Recent posts:</h3>
-    <ul class="posts">
-      <%= render @posts %>
-    </ul>
-  </article>
+<h2><%= "Name: #{@user.name}" %></h2>
+<article class="timeline">
+  <% if @user == current_user %>
+  <h3>Recent posts:</h3>
+  <ul class="posts">
+    <%= render @posts %>
+  </ul>
+  <% end %>
+</article>
+
+ <%= accept_or_pending_btn(@user) %>
+
+<h3 class="mt-4" >Mutual Friends</h3>
+<% if current_user != @user %>
+  <% mutual_friends(current_user, @user) & mutual_friends(current_user, @user).each do |f| %>
+    <p><%= f.name %></p>
+  <% end %>
+<% end %>
+
+
+
+ 
+
 </section>
