@@ -1,40 +1,44 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  describe 'creation' do
+    before do
+      @user = FactoryBot.create(:user)
+    end
+
+    it 'should be able to be created if valid' do
+      expect(@user).to be_valid
+    end
+  end
+
   context 'validation test' do
-    it 'ensures name of user is present' do
-      user = User.new(email: 'user@gmail.com', password: 'password').save
-      expect(user).to eql(false)
-    end
-
-    it 'ensures max length for name to be 20' do
-      user = User.new(name: 'Kamwa Emmanuelle Alix', email: 'user@gmail.com', password: 'password').save
-      expect(user).to eql(false)
-    end
-
-    it 'should save successfully' do
-      user = User.new(name: 'User1', email: 'user@gmail.com', password: 'password').save
-      expect(user) == true
+    let(:user) { FactoryBot.create(:second_user) }
+    it 'ensure name is present' do
+      user.name = nil
+      expect(user.save).to eq(false)
     end
   end
-
-  context 'ActiveRecord associations' do
-    it 'belongs to user' do
-      user = Friendship.reflect_on_association(:user)
-      expect(user.macro).to eq(:belongs_to)
+  context 'associations' do
+    it 'should have many posts' do
+      t = User.reflect_on_association(:posts)
+      expect(t.macro).to eq(:has_many)
     end
 
-    it 'belongs to friend' do
-      user = Friendship.reflect_on_association(:friend)
-      expect(user.macro).to eq(:belongs_to)
+    it 'should have many comments' do
+      t = User.reflect_on_association(:comments)
+      expect(t.macro).to eq(:has_many)
     end
-  end
-
-  context 'Attributes Validation' do
-    friendship = Friendship.new(user_id: @user_one, friend_id: nil, status: 'pending')
-
-    it 'should invalidate the user_id of value nil' do
-      expect(friendship).to_not be_valid
+    it 'should have many likes' do
+      t = User.reflect_on_association(:likes)
+      expect(t.macro).to eq(:has_many)
+    end
+    it 'should have many friendships' do
+      t = User.reflect_on_association(:friendships)
+      expect(t.macro).to eq(:has_many)
+    end
+    it 'should have many friends' do
+      t = User.reflect_on_association(:friends)
+      expect(t.macro).to eq(:has_many)
     end
   end
 end
