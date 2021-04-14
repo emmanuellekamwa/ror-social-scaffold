@@ -8,7 +8,7 @@
 - Ruby on Rails v5.2.4
 - Vs Code
 
-## Lve Demo
+## Live Demo
 [Live Demo](https://evening-headland-12860.herokuapp.com/)
 
 ## Getting Started
